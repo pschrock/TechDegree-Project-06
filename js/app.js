@@ -73,27 +73,30 @@ function checkLetter (parameter) {
 
 //Create a checkWin function
 function checkWin () {
-  const message = document.createElement('p');
-  message.style.fontSize = '3em';
+  const winMessage = 'Congratulations, You Win!';
+  const loseMessage = 'Sorry, you ran out of hearts!';
   //check number of letters with class “show” equal number of letters with class “letters”
   if (show.length == letter.length) {
     //win -- overlay screen with “win” class and appropriate text.
-    overlay.style.display = 'flex';
-    overlay.className = 'win';
-    overlayButton.textContent = 'Play Again';
-    message.textContent = 'Congratulations, You Win!'
-    if (overlayButton.nextElementSibling === null) {
-      overlay.appendChild(message);
-    }
+    changes('flex', 'win', 'Play Again', winMessage);
   } else if (missed == 5) {
     //lose -- overlay screen with the “lose” class and appropriate text.
-    overlay.style.display = 'flex';
-    overlay.className = 'lose';
-    overlayButton.textContent = 'Try Again';
-    message.textContent = 'Sorry, You Ran Out of Hearts!'
-    if (overlayButton.nextElementSibling === null) {
-      overlay.appendChild(message);
-    }
+    changes('flex', 'lose', 'Try Again', loseMessage);
+  }
+}
+
+function changes (f, classes, text, mess) {
+  const message = document.createElement('p');
+  message.style.fontSize = '3em';
+  overlay.style.display = f;
+  overlay.className = classes;
+  overlayButton.textContent = text;
+  message.textContent = mess;
+  if (overlayButton.nextElementSibling === null) {
+    overlay.appendChild(message)
+  } else {    
+    overlay.removeChild(overlay.lastChild);
+    overlay.appendChild(message);
   }
 }
 
@@ -105,12 +108,14 @@ overlayButton.addEventListener('click', (event) => {
   let button = event.target.textContent;
   if (button == 'Start Game') {
     overlay.style.display = 'none';
+    //Add button to the “success” and “failure” screens that reset the game
     //Resets the game with a new phrase
   } else if (button == 'Play Again') {
     reset();
+    overlay.style.display = 'none';
     //Resets the game with the same phrase
   } else if (button == 'Try Again') {
-    const overlayP = document.querySelector('#overlay p');
+    const p = document.querySelector('#overlay p');
     missed = 0;
     for (let i = 0; i < qwertyButton.length; ++i) {
       qwertyButton[i].classList.remove('chosen');
